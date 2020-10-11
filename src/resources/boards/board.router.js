@@ -3,13 +3,15 @@ const boardsService = require('./board.service');
 
 router.route('/').get(async (req, res) => {
   const boards = await boardsService.getAll();
-
   res.json(boards);
 });
 
 router.route('/:boardId').get(async (req, res) => {
   const board = await boardsService.getById(req.params.boardId);
-
+  if (!board) {
+    res.status(404);
+    res.json({ message: 'not found' });
+  }
   res.json(board);
 });
 

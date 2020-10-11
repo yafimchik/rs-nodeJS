@@ -3,6 +3,7 @@ const tasksService = require('./task.service');
 
 router.route('/').get(async (req, res) => {
   const tasks = await tasksService.getAllByBoardId(req.params.boardId);
+
   res.json(tasks);
 });
 
@@ -14,11 +15,15 @@ router.route('/').post(async (req, res) => {
 });
 
 router.route('/:taskId').get(async (req, res) => {
-  const tasks = await tasksService.getById(
+  const task = await tasksService.getById(
     req.params.boardId,
     req.params.taskId
   );
-  res.json(tasks);
+  if (!task) {
+    res.status(404);
+    res.json({ message: 'not found' });
+  }
+  res.json(task);
 });
 
 router.route('/:taskId').put(async (req, res) => {
