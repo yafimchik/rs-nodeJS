@@ -29,7 +29,7 @@ router.route('/:boardId').put(async (req, res) => {
 });
 
 router.route('/:boardId').delete(async (req, res) => {
-  const result = await boardsService.delete(req.params.boardId);
+  const result = await boardsService.deleteById(req.params.boardId);
 
   res.json(result);
 });

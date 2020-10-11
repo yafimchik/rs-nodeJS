@@ -10,24 +10,23 @@ class UsersService extends PrototypeService {
   }
 
   async deleteById(userId) {
-    const userTasks = this.tasksService.getAllByUserId(userId);
+    const userTasks = await this.tasksService.getAllByUserId(userId);
+
     if (userTasks.length) {
-      return super.deleteById(userId);
-    }
-    const deleteTasksQueue = userTasks.map(task => {
-      const newTask = { ...task };
-      newTask.userId = null;
-      return this.put(newTask);
-    });
-    const clearTasksResult = Promise.all(deleteTasksQueue).then(
-      results => !results.includes(false)
-    );
+      const clearTaskQueue = userTasks.map(task => {
+        const newTask = { ...task };
+        newTask.userId = null;
+        return this.tasksService.update(newTask);
+      });
+      const clearTasksResults = await Promise.all(clearTaskQueue);
 
-    if (!clearTasksResult) {
-      return false;
+      if (clearTasksResults.includes(false)) {
+        return false;
+      }
     }
 
-    return super.deleteById(userId);
+    const result = await super.deleteById(userId);
+    return result;
   }
 }
 

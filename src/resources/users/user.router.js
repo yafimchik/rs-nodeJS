@@ -21,7 +21,6 @@ router.route('/').post(async (req, res) => {
 router.route('/:id').put(async (req, res) => {
   const user = req.body;
   user.id = req.params.id;
-  console.log(user);
   const newUser = await usersService.update(user);
   if (!newUser) {
     res.json({ message: 'no such user in base' });
@@ -30,7 +29,7 @@ router.route('/:id').put(async (req, res) => {
 });
 
 router.route('/:id').delete(async (req, res) => {
-  const user = await usersService.delete(req.params.id);
+  const user = await usersService.deleteById(req.params.id);
   res.json(User.toResponse(user));
 });
 

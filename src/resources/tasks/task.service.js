@@ -4,16 +4,17 @@ const Task = require('./task.model');
 
 class TasksService extends PrototypeService {
   async getAllByBoardId(boardId) {
-    const tasks = this.repo.getAllByBoardId(boardId);
-    return tasks;
+    const boardTasks = await this.repo.getAllByBoardId(boardId);
+    return boardTasks;
   }
 
   async getAllByUserId(userId) {
-    return this.repo.getAllByUserId(userId);
+    const userTasks = await this.repo.getAllByUserId(userId);
+    return userTasks;
   }
 
   async getById(boardId, taskId) {
-    const tasks = this.repo.getTaskById(boardId, taskId);
+    const tasks = await this.repo.getById(boardId, taskId);
     return tasks;
   }
 
@@ -23,12 +24,15 @@ class TasksService extends PrototypeService {
   }
 
   async deleteAllBoardTasks(boardId) {
-    const tasks = await this.getAllByBoardId(boardId);
-    if (!tasks.length) {
+    const boardTasks = await this.getAllByBoardId(boardId);
+    if (!boardTasks.length) {
       return true;
     }
-    const deleteQueue = tasks.map(task => this.deleteById(boardId, task.id));
-    return Promise.all(deleteQueue).then(results => !results.includes(false));
+    const deleteTaskQueue = boardTasks.map(task =>
+      this.deleteById(boardId, task.id)
+    );
+    const results = await Promise.all(deleteTaskQueue);
+    return !results.includes(false);
   }
 }
 

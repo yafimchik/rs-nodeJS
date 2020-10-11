@@ -5,29 +5,29 @@ const {
 const MemoryRepository = require('../../common/prototype.memory.repository');
 
 class TasksRepository extends MemoryRepository {
-  async getAllByBoardId(boardId) {
+  getAllByBoardId(boardId) {
     const filterByBoard = tasksByBoardIdFilter(boardId);
 
-    return this.objectsArray.filter(filterByBoard);
+    return this.filter(filterByBoard);
   }
 
-  async deleteById(boardId, taskId) {
-    const task = await this.getById(boardId, taskId);
+  deleteById(boardId, taskId) {
+    const task = this.getById(boardId, taskId);
     if (!task) {
       return false;
     }
     return super.deleteById(taskId);
   }
 
-  async getById(boardId, taskId) {
+  getById(boardId, taskId) {
     const filterByBoard = tasksByBoardIdFilter(boardId);
-    const filteredRepo = this.objectsArray.getFilteredContainer(filterByBoard);
+    const filteredRepo = this.getFilteredRepository(filterByBoard);
     return filteredRepo.getById(taskId);
   }
 
-  async getAllByUserId(userId) {
+  getAllByUserId(userId) {
     const filterByUser = tasksByUserIdFilter(userId);
-    return this.objectsArray.filter(filterByUser);
+    return this.filter(filterByUser);
   }
 }
 

@@ -3,10 +3,6 @@ class MemoryRepository {
     this.objectsArray = objectsArray;
   }
 
-  log() {
-    console.log(this.objectsArray);
-  }
-
   getAll() {
     const result = this.objectsArray.map(obj => ({ ...obj }));
     return result;
@@ -55,7 +51,8 @@ class MemoryRepository {
 
   getFilteredRepository(filterFn) {
     const filteredTasks = this.filter(filterFn);
-    return new this(filteredTasks);
+    const newRepo = new MemoryRepository(filteredTasks);
+    return newRepo;
   }
 }
 

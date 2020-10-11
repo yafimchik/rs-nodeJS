@@ -1,5 +1,5 @@
 const PrototypeService = require('../../common/prototype.service');
-const { tasksService } = require('../tasks/task.service');
+const tasksService = require('../tasks/task.service');
 const boardsRepo = require('./board.memory.repository');
 const Board = require('./board.model');
 
@@ -16,8 +16,8 @@ class BoardsService extends PrototypeService {
     if (!deleteTasksResult) {
       return false;
     }
-
-    return super.deleteById(boardId);
+    const result = await super.deleteById(boardId);
+    return result;
   }
 }
 

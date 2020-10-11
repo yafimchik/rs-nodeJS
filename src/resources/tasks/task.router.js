@@ -7,14 +7,14 @@ router.route('/').get(async (req, res) => {
 });
 
 router.route('/').post(async (req, res) => {
-  const task = res.body;
+  const task = req.body;
   task.boardId = req.params.boardId;
   const tasks = await tasksService.create(task);
   res.json(tasks);
 });
 
 router.route('/:taskId').get(async (req, res) => {
-  const tasks = await tasksService.getTaskById(
+  const tasks = await tasksService.getById(
     req.params.boardId,
     req.params.taskId
   );
@@ -22,7 +22,7 @@ router.route('/:taskId').get(async (req, res) => {
 });
 
 router.route('/:taskId').put(async (req, res) => {
-  const task = res.body;
+  const task = req.body;
   task.boardId = req.params.boardId;
   task.taskId = req.params.taskId;
   const result = await tasksService.update(task);
