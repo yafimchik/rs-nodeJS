@@ -1,5 +1,5 @@
 const MemoryRepository = require('../../common/prototype.memory.repository');
 
-const usersRepo = new MemoryRepository();
+const boardsRepo = new MemoryRepository();
 
-module.exports = usersRepo;
+module.exports = boardsRepo;
