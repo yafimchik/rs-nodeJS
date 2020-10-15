@@ -1,3 +1,8 @@
+const fs = require('fs');
+const { LOG_MODES, LOG_MODE, LOG_FILE_PATH } = require('./config');
+
+const { toString } = require('./utils');
+
 const LOG_RECORD_TYPES = {
   INPUT: 'INPUT',
   ERROR: 'ERROR',
@@ -12,8 +17,29 @@ const ERROR_RECORD_TYPES = [
 ];
 
 class Logger {
-  constructor() {
+  constructor(printMode, printModes, logFilePath) {
     this.log = [];
+    this.printMode = printMode;
+    this.printModes = printModes;
+    this.logFilePath = logFilePath;
+    this.initMode(printMode);
+  }
+
+  get fileReady() {
+    return this.printMode === this.printModes.FILE;
+  }
+
+  initMode() {
+    if (this.fileReady) {
+      this.error$ = fs.createWriteStream(this.logFilePath, {
+        encoding: 'utf8',
+        flags: 'a+'
+      });
+      this.normal$ = this.error$;
+    } else {
+      this.error$ = process.stderr;
+      this.normal$ = process.stdout;
+    }
   }
 
   addToLog(logData, eventType = LOG_RECORD_TYPES.INPUT) {
@@ -33,36 +59,46 @@ class Logger {
     this.addToLog(newLogData);
   }
 
-  addError(error) {
-    this.addToLog({ error }, LOG_RECORD_TYPES.ERROR);
+  addError(error, errorType = LOG_RECORD_TYPES.ERROR, origin) {
+    const newLogData = {
+      error: {
+        message: error.message,
+        code: error.code,
+        stack: error.stack
+      }
+    };
+    if (origin) {
+      newLogData.origin = origin;
+    }
+    this.addToLog(newLogData, errorType);
   }
 
   addUncaughtException(error, origin) {
-    const newLogData = {
-      error,
-      origin
-    };
-    this.addToLog(newLogData, LOG_RECORD_TYPES.EXCEPTION);
+    this.addError(error, LOG_RECORD_TYPES.EXCEPTION, origin);
   }
 
   addUnhandledRejection(error) {
-    this.addToLog({ error }, LOG_RECORD_TYPES.REJECTION);
+    this.addError(error, LOG_RECORD_TYPES.REJECTION);
   }
 
   print(logData) {
-    const dateString = new Date(logData.time).toISOString();
-    const logDataString = JSON.stringify(logData);
+    const dataToPrint = logData;
+    const { type, time } = dataToPrint;
+    delete dataToPrint.type;
+    delete dataToPrint.time;
+    const titleString = `${type} ${new Date(time).toISOString()}`;
+    const logDataString = toString(dataToPrint);
 
-    let logStream = process.stdout;
+    let logStream = this.normal$;
     if (ERROR_RECORD_TYPES.includes(logData.type)) {
-      logStream = process.stderr;
+      logStream = this.error$;
     }
 
-    logStream.write(`\n${dateString} :\n`);
-    logStream.write(`\n${logDataString}\n`);
+    logStream.write(`${titleString} : `);
+    logStream.write(`${logDataString}\n`);
   }
 }
 
-const logger = new Logger();
+const logger = new Logger(LOG_MODE, LOG_MODES, LOG_FILE_PATH);
 
 module.exports = logger;
