@@ -1,5 +1,5 @@
 function toString(value, indent = '') {
-  if (value === undefined) return "''";
+  if (value === undefined || value === null) return "''";
 
   let str = '';
 
@@ -16,10 +16,15 @@ function toString(value, indent = '') {
 
   let curIndent = indent;
 
-  str += '{\n';
   curIndent += '  ';
 
   const props = Object.keys(value);
+
+  if (!props.length) {
+    return '{}';
+  }
+
+  str += '{\n';
 
   props.forEach(prop => {
     str += `${curIndent}${prop}: ${toString(value[prop], curIndent)},\n`;
