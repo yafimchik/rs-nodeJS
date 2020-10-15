@@ -1,6 +1,6 @@
 const logger = require('../common/logger');
 
-const inputLogger = (req, res, next) => {
+const inputLogger = async (req, res, next) => {
   logger.addInput(req);
   next();
 };
