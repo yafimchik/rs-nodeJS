@@ -1,9 +1,11 @@
+const logger = require('../common/logger');
+
 // eslint-disable-next-line no-unused-vars
 function errorHandler(err, req, res, next) {
-  console.error(err.stack);
+  logger.addError(err);
   res.status(err.statusCode || 500).json({
-    error: err.message || 'unknown server error'
+    error: err.message || 'Internal Server Error'
   });
 }
 
-module.exports = { errorHandler };
+module.exports = errorHandler;
