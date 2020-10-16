@@ -2,9 +2,12 @@ const MongodbRepository = require('../../common/prototype.mongodb.repository');
 
 class TasksMongodbRepository extends MongodbRepository {
   async getAllByBoardId(boardId) {
-    const result = await this.dbModel.find({ boardId }).exec();
+    const result = await this.dbModel
+      .find({ boardId })
+      .select(this.props)
+      .exec();
 
-    return result;
+    return this.toObject(result);
   }
 
   async deleteById(boardId, taskId) {
@@ -12,24 +15,34 @@ class TasksMongodbRepository extends MongodbRepository {
       .deleteOne({ _id: taskId, boardId })
       .exec();
 
-    return result;
+    return this.toObject(result);
   }
 
   async getById(boardId, taskId) {
-    const result = await this.dbModel.find({ _id: taskId, boardId }).exec();
+    let result = await this.dbModel
+      .find({ _id: taskId, boardId })
+      .select(this.props)
+      .exec();
 
-    return result;
+    if (result instanceof Array) {
+      result = result[0];
+    }
+
+    return this.toObject(result);
   }
 
   async getAllByUserId(userId) {
-    const result = await this.dbModel.find({ userId }).exec();
-    return result;
+    const result = await this.dbModel
+      .find({ userId })
+      .select(this.props)
+      .exec();
+    return this.toObject(result);
   }
 
   async deleteAllByBoardId(boardId) {
     const result = await this.dbModel.deleteMany({ boardId }).exec();
 
-    return result;
+    return this.toObject(result);
   }
 
   async untieFromUserId(userId) {
@@ -38,7 +51,7 @@ class TasksMongodbRepository extends MongodbRepository {
       .set({ userId: null })
       .exec();
 
-    return result;
+    return this.toObject(result);
   }
 }
 
