@@ -9,12 +9,22 @@ function toString(value, indent = '') {
     return str;
   }
 
-  if (typeof value !== 'object' || value instanceof Array) {
+  if (typeof value !== 'object') {
     str += JSON.stringify(value);
     return str;
   }
 
   let curIndent = indent;
+
+  if (value instanceof Array) {
+    str += '[\n';
+    curIndent += '  ';
+    value.forEach(item => {
+      str += `${curIndent}${toString(item, curIndent)},\n`;
+    });
+    str += `${indent}]`;
+    return str;
+  }
 
   curIndent += '  ';
 
