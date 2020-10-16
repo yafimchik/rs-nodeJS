@@ -1,12 +1,16 @@
-class Task {
-  constructor({
-    title = 'title',
-    order = 'order',
-    description = 'description',
-    userId = null,
-    boardId = null,
-    columnId = null
-  } = {}) {
+const Model = require('../../common/prototype.model');
+
+class Task extends Model {
+  constructor(obj = {}) {
+    super(obj);
+    const {
+      title = 'title',
+      order = 'order',
+      description = 'description',
+      userId = null,
+      boardId = null,
+      columnId = null
+    } = obj;
     this.title = title;
     this.order = order;
     this.description = description;
@@ -19,6 +23,10 @@ class Task {
     return 'Task';
   }
 
+  static toPropsArray() {
+    return ['title', 'order', 'description', 'userId', 'boardId', 'columnId'];
+  }
+
   static toSchemaType() {
     const type = {
       title: {
@@ -26,7 +34,7 @@ class Task {
         required: true
       },
       order: {
-        type: String,
+        type: Number,
         required: true
       },
       description: {
