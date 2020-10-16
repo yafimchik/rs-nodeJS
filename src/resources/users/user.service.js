@@ -1,7 +1,7 @@
 const User = require('./user.model');
 const PrototypeService = require('../../common/prototype.service');
+const MongodbRepository = require('../../common/prototype.mongodb.repository');
 const tasksService = require('../tasks/task.service');
-const usersRepo = require('./user.memory.repository');
 
 class UsersService extends PrototypeService {
   constructor(repo, model, tasksServ) {
@@ -10,26 +10,15 @@ class UsersService extends PrototypeService {
   }
 
   async deleteById(userId) {
-    const userTasks = await this.tasksService.getAllByUserId(userId);
+    const untieTasksResult = await this.tasksService.untieTasksFromUser(userId);
 
-    if (userTasks.length) {
-      const clearTaskQueue = userTasks.map(task => {
-        const newTask = { ...task };
-        newTask.userId = null;
-        return this.tasksService.update(newTask);
-      });
-      const clearTasksResults = await Promise.all(clearTaskQueue);
-
-      if (clearTasksResults.includes(false)) {
-        return false;
-      }
-    }
+    if (!untieTasksResult) return false;
 
     const result = await super.deleteById(userId);
     return result;
   }
 }
 
-const usersService = new UsersService(usersRepo, User, tasksService);
+const usersService = new UsersService(MongodbRepository, User, tasksService);
 
 module.exports = usersService;

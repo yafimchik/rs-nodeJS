@@ -1,5 +1,5 @@
 const PrototypeService = require('../../common/prototype.service');
-const tasksRepo = require('./task.memory.repository');
+const TasksMongodbRepository = require('./task.mongodb.repository');
 const Task = require('./task.model');
 
 class TasksService extends PrototypeService {
@@ -23,28 +23,19 @@ class TasksService extends PrototypeService {
     return result;
   }
 
-  async update(obj) {
-    const entity = await this.getById(obj.boardId, obj.id);
-    if (!entity) return null;
+  async deleteAllBoardTasks(boardId) {
+    const result = await this.repo.deleteAllByBoardId(boardId);
 
-    const newEntity = new this.model(obj);
-    const result = await this.repo.put(newEntity);
     return result;
   }
 
-  async deleteAllBoardTasks(boardId) {
-    const boardTasks = await this.getAllByBoardId(boardId);
-    if (!boardTasks.length) {
-      return true;
-    }
-    const deleteTaskQueue = boardTasks.map(task =>
-      this.deleteById(boardId, task.id)
-    );
-    const results = await Promise.all(deleteTaskQueue);
-    return !results.includes(false);
+  async untieTasksFromUser(userId) {
+    const result = await this.repo.untieFromUserId(userId);
+
+    return result;
   }
 }
 
-const tasksService = new TasksService(tasksRepo, Task);
+const tasksService = new TasksService(TasksMongodbRepository, Task);
 
 module.exports = tasksService;
