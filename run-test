@@ -1,0 +1,12 @@
+#!/bin/bash
+counter=0;
+while true; do
+    counter=$((counter+1))
+    npm test
+    if [ $? -ne 0 ]; then
+        break
+    fi
+    echo "******* Attempt N $counter *******"
+done
+
+echo "Tests are failed. Attempt: $counter"
