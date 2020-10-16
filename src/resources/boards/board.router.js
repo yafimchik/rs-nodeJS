@@ -15,6 +15,7 @@ router.route('/:boardId').get(
     if (!board) {
       res.status(404);
       res.json({ message: 'not found' });
+      return;
     }
     res.json(board);
   })
