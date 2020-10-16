@@ -32,8 +32,8 @@ router.route('/').post(
 router.route('/:id').put(
   asyncHandler(async (req, res) => {
     const user = req.body;
-    user.id = req.params.id;
-    const newUser = await usersService.update(user);
+    const id = req.params.id;
+    const newUser = await usersService.update(id, user);
     if (!newUser) {
       res.status(404);
       res.json({ message: 'no such user in base' });

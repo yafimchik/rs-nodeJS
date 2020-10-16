@@ -32,8 +32,8 @@ router.route('/').post(
 router.route('/:boardId').put(
   asyncHandler(async (req, res) => {
     const board = { ...req.body };
-    board.id = req.params.boardId;
-    const result = await boardsService.update(board);
+    const id = req.params.boardId;
+    const result = await boardsService.update(id, board);
 
     res.json(result);
   })

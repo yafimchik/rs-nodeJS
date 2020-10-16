@@ -1,6 +1,6 @@
 class PrototypeService {
   constructor(repo, model) {
-    this.repo = repo;
+    this.repo = new repo(model);
     this.model = model;
   }
 
@@ -20,12 +20,9 @@ class PrototypeService {
     return result;
   }
 
-  async update(obj) {
-    const entity = await this.getById(obj.id);
-    if (!entity) return null;
-
+  async update(id, obj) {
     const newEntity = new this.model(obj);
-    const result = await this.repo.put(newEntity);
+    const result = await this.repo.put(id, newEntity);
     return result;
   }
 
