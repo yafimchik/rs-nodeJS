@@ -1,11 +1,24 @@
-const { v4: uuid } = require('uuid');
 const Column = require('./column.model');
 
 class Board {
-  constructor({ id = uuid(), title = 'title', columns = [] } = {}) {
-    this.id = id;
+  constructor({ title = 'title', columns = [] } = {}) {
     this.title = title;
     this.columns = columns.map(col => new Column(col));
+  }
+
+  static get modelName() {
+    return 'Board';
+  }
+
+  static toSchemaType() {
+    const type = {
+      title: {
+        type: String,
+        required: true
+      },
+      columns: [Column.toSchemaType()]
+    };
+    return type;
   }
 }
 
