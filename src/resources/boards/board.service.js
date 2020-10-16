@@ -10,14 +10,11 @@ class BoardsService extends PrototypeService {
   }
 
   async deleteById(boardId) {
-    const deleteTasksResult = await this.tasksService.deleteAllBoardTasks(
-      boardId
-    );
-    if (!deleteTasksResult) {
-      return false;
-    }
-    const result = await super.deleteById(boardId);
-    return result;
+    const results = await Promise.all([
+      this.tasksService.deleteAllBoardTasks(boardId),
+      super.deleteById(boardId)
+    ]);
+    return !results.includes(false);
   }
 }
 
