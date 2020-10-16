@@ -15,17 +15,12 @@ class PrototypeService {
   }
 
   async create(obj) {
-    const modelEntity = new this.model(obj);
-    const result = await this.repo.post(modelEntity);
+    const result = await this.repo.post(new this.model(obj));
     return result;
   }
 
   async update(obj) {
-    const entity = await this.getById(obj.id);
-    if (!entity) return null;
-
-    const newEntity = new this.model(obj);
-    const result = await this.repo.put(newEntity);
+    const result = await this.repo.put(new this.model(obj));
     return result;
   }
 

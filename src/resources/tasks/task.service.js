@@ -33,15 +33,13 @@ class TasksService extends PrototypeService {
   }
 
   async deleteAllBoardTasks(boardId) {
-    const boardTasks = await this.getAllByBoardId(boardId);
-    if (!boardTasks.length) {
-      return true;
-    }
-    const deleteTaskQueue = boardTasks.map(task =>
-      this.deleteById(boardId, task.id)
-    );
-    const results = await Promise.all(deleteTaskQueue);
-    return !results.includes(false);
+    const result = await this.repo.deleteBoardId(boardId);
+    return result;
+  }
+
+  async untieUserTasks(userId) {
+    const result = await this.repo.deleteUserId(userId);
+    return result;
   }
 }
 

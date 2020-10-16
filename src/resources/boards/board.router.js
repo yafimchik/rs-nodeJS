@@ -11,6 +11,7 @@ router.route('/:boardId').get(async (req, res) => {
   if (!board) {
     res.status(404);
     res.json({ message: 'not found' });
+    return;
   }
   res.json(board);
 });

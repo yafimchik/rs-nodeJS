@@ -29,6 +29,7 @@ router.route('/:id').put(async (req, res) => {
   if (!newUser) {
     res.status(404);
     res.json({ message: 'no such user in base' });
+    return;
   }
   res.json(User.toResponse(newUser));
 });
