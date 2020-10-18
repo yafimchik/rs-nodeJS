@@ -9,20 +9,13 @@ class MemoryRepository {
   }
 
   getById(id) {
-    let obj = this.objectsArray.find(o => o.id === id);
-    if (obj) {
-      obj = { ...obj };
-    }
+    const obj = this.objectsArray.find(o => o.id === id);
     return obj;
   }
 
   post(obj) {
-    if (typeof obj !== 'object') {
-      return null;
-    }
     this.objectsArray.push(obj);
-    // TODO: mock implementation. should be replaced during task development
-    return { ...obj };
+    return obj;
   }
 
   put(obj) {
@@ -30,29 +23,19 @@ class MemoryRepository {
     if (index === -1) {
       return null;
     }
-    this.objectsArray[index] = { ...obj };
+    this.objectsArray.splice(index, 1, obj);
     return obj;
   }
 
   deleteById(id) {
-    const index = this.objectsArray.findIndex(o => o.id === id);
-    if (index === -1) {
-      return false;
-    }
+    let result = false;
+    this.objectsArray = this.objectsArray.filter(obj => {
+      const idCheck = obj.id === id;
+      result = result || idCheck;
+      return !idCheck;
+    });
 
-    this.objectsArray.splice(index, 1);
-    return true;
-  }
-
-  filter(filterFn) {
-    const result = this.objectsArray.filter(filterFn);
     return result;
-  }
-
-  getFilteredRepository(filterFn) {
-    const filteredTasks = this.filter(filterFn);
-    const newRepo = new MemoryRepository(filteredTasks);
-    return newRepo;
   }
 }
 

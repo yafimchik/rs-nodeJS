@@ -1,33 +1,48 @@
-const {
-  tasksByBoardIdFilter,
-  tasksByUserIdFilter
-} = require('../../common/filters');
 const MemoryRepository = require('../../common/prototype.memory.repository');
 
 class TasksRepository extends MemoryRepository {
   getAllByBoardId(boardId) {
-    const filterByBoard = tasksByBoardIdFilter(boardId);
-
-    return this.filter(filterByBoard);
+    const result = this.objectsArray.filter(obj => obj.boardId === boardId);
+    return result;
   }
 
   deleteById(boardId, taskId) {
-    const task = this.getById(boardId, taskId);
-    if (!task) {
-      return false;
-    }
-    return super.deleteById(taskId);
+    let result = false;
+    this.objectsArray = this.objectsArray.filter(task => {
+      const idCheck = task.boardId === boardId && task.id === taskId;
+      result = result || idCheck;
+      return !idCheck;
+    });
+
+    return result;
   }
 
   getById(boardId, taskId) {
-    const filterByBoard = tasksByBoardIdFilter(boardId);
-    const filteredRepo = this.getFilteredRepository(filterByBoard);
-    return filteredRepo.getById(taskId);
+    const result = this.objectsArray.find(
+      item => item.boardId === boardId && item.id === taskId
+    );
+    return result;
   }
 
   getAllByUserId(userId) {
-    const filterByUser = tasksByUserIdFilter(userId);
-    return this.filter(filterByUser);
+    const result = this.objectsArray.filter(obj => obj.userId === userId);
+    return result;
+  }
+
+  deleteUserId(userId) {
+    this.objectsArray.forEach(obj => {
+      if (obj.userId === userId) {
+        obj.userId = null;
+      }
+    });
+    return true;
+  }
+
+  deleteBoardId(boardId) {
+    this.objectsArray = this.objectsArray.filter(
+      obj => obj.boardId !== boardId
+    );
+    return true;
   }
 }
 
