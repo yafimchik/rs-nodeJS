@@ -5,8 +5,6 @@ const ServerError = require('../errors/server-error.error');
 function errorHandler(err, req, res, next) {
   logger.addError(err);
 
-  console.log(err);
-
   if (err instanceof ServerError) {
     res.status(err.responseStatus).json({ message: err.shortMsg });
     return;
