@@ -1,8 +1,8 @@
 const User = require('./user.model');
 const PrototypeService = require('../../common/prototype.service');
-const MongodbRepository = require('../../common/prototype.mongodb.repository');
 const tasksService = require('../tasks/task.service');
 const cryptService = require('../../common/crypt.service');
+const UsersMongodbRepository = require('./user.mongodb.repository');
 
 class UsersService extends PrototypeService {
   constructor(repo, model, tasksServ, cryptServ) {
@@ -12,14 +12,16 @@ class UsersService extends PrototypeService {
   }
 
   async create(obj) {
-    obj.password = cryptService.toHash(obj.password);
-    const result = super.create(obj);
+    const { password, ...userObj } = obj;
+    userObj.password = await this.cryptService.toHash(password);
+    const result = await super.create(userObj);
     return result;
   }
 
   async update(id, obj) {
-    obj.password = cryptService.toHash(obj.password);
-    const result = super.create(obj);
+    const { password, ...userObj } = obj;
+    userObj.password = await this.cryptService.toHash(password);
+    const result = await super.create(userObj);
     return result;
   }
 
@@ -31,10 +33,15 @@ class UsersService extends PrototypeService {
     const result = await super.deleteById(userId);
     return result;
   }
+
+  async getByLogin(login) {
+    const user = await this.repo.getByLogin(login);
+    return user;
+  }
 }
 
 const usersService = new UsersService(
-  MongodbRepository,
+  UsersMongodbRepository,
   User,
   tasksService,
   cryptService
