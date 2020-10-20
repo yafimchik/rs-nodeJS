@@ -1,5 +1,6 @@
+const { Schema } = require('mongoose');
 const Model = require('../../common/prototype.model');
-const Column = require('./column.model');
+const Column = require('../columns/column.model');
 
 class Board extends Model {
   constructor(obj = {}) {
@@ -24,7 +25,12 @@ class Board extends Model {
         type: String,
         required: true
       },
-      columns: [Column.toSchemaType()]
+      columns: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Column'
+        }
+      ]
     };
     return type;
   }
