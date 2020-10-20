@@ -15,8 +15,6 @@ class LoginService {
     }
 
     const user = await this.usersService.getByLogin(login);
-    console.log({ login, pswd });
-    console.log(user);
     if (!user) return null;
 
     const result = await this.cryptService.compareStringWithHash(
@@ -25,7 +23,6 @@ class LoginService {
     );
     if (result) {
       const jwt = await this.jwtService.generateJWT(user);
-      console.log(jwt);
       return { token: jwt };
     }
     return null;

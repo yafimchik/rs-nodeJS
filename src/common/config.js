@@ -11,7 +11,7 @@ const LOG_MODES = {
 };
 
 const LOG_FILE_PATH = path.resolve(__dirname, '../', process.env.LOG_FILE_PATH);
-console.log(LOG_FILE_PATH);
+console.log('LOG FILE PATH = ', LOG_FILE_PATH);
 
 module.exports = {
   PORT: process.env.PORT,
