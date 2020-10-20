@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { RESPONSE_DELETED } = require('../../common/config');
 const asyncHandler = require('../../middlewares/async-handler.middleware');
 const boardsService = require('./board.service');
 
@@ -12,11 +13,6 @@ router.route('/').get(
 router.route('/:boardId').get(
   asyncHandler(async (req, res) => {
     const board = await boardsService.getById(req.params.boardId);
-    if (!board) {
-      res.status(404);
-      res.json({ message: 'not found' });
-      return;
-    }
     res.json(board);
   })
 );
@@ -42,9 +38,9 @@ router.route('/:boardId').put(
 
 router.route('/:boardId').delete(
   asyncHandler(async (req, res) => {
-    const result = await boardsService.deleteById(req.params.boardId);
+    await boardsService.deleteById(req.params.boardId);
 
-    res.json(result);
+    res.json(RESPONSE_DELETED);
   })
 );
 

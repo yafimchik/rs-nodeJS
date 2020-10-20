@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const BadRequestError = require('../errors/bad-request.error');
 
 class MongodbRepository {
   constructor(model) {
@@ -31,14 +32,14 @@ class MongodbRepository {
     }
 
     const newRecord = new this.dbModel(obj);
-    const result = await newRecord.save();
-
+    const result = await MongodbRepository.safeWrite(newRecord.save());
     return this.toObject(result);
   }
 
   async put(id, obj) {
-    const result = await this.dbModel.findByIdAndUpdate(id, obj).exec();
-
+    const result = await MongodbRepository.safeWrite(
+      this.dbModel.findByIdAndUpdate(id, obj).exec()
+    );
     return this.toObject(result);
   }
 
@@ -46,6 +47,15 @@ class MongodbRepository {
     const result = await this.dbModel.findByIdAndDelete(id).exec();
 
     return this.toObject(result);
+  }
+
+  static async safeWrite(action) {
+    try {
+      const result = await action;
+      return result;
+    } catch (err) {
+      return MongodbRepository.handleMongodbErrors(err);
+    }
   }
 
   toObject(result) {
@@ -69,6 +79,17 @@ class MongodbRepository {
         newRec[prop] = entity[prop];
       });
       return newRec;
+    }
+    return result;
+  }
+
+  static handleMongodbErrors(result) {
+    if (result && result.driver && result.code === 11000) {
+      throw new BadRequestError(
+        `${Object.keys(result.keyValue)
+          .join(', ')
+          .toUpperCase()} must be unique`
+      );
     }
     return result;
   }

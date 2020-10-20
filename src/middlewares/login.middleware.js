@@ -1,19 +1,17 @@
 // const logger = require('../common/logger');
 
 const loginService = require('../common/login.service');
+const BadLoginError = require('../errors/bad-login.error');
 
 const loginHandler = async (req, res) => {
   const { login, password } = req.body;
 
   const loginResult = await loginService.login(login, password);
-  if (loginResult) {
-    res.status(200);
-    res.json(loginResult);
-  } else {
-    res.status(403);
-    res.json({ message: 'Incorrect login or password' });
+  if (!loginResult) {
+    throw new BadLoginError();
   }
-  return;
+  res.status(200);
+  res.json(loginResult);
 };
 
 module.exports = loginHandler;

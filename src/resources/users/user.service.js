@@ -3,6 +3,7 @@ const PrototypeService = require('../../common/prototype.service');
 const tasksService = require('../tasks/task.service');
 const cryptService = require('../../common/crypt.service');
 const UsersMongodbRepository = require('./user.mongodb.repository');
+const NotFoundError = require('../../errors/not-found.error');
 
 class UsersService extends PrototypeService {
   constructor(repo, model, tasksServ, cryptServ) {
@@ -21,14 +22,12 @@ class UsersService extends PrototypeService {
   async update(id, obj) {
     const { password, ...userObj } = obj;
     userObj.password = await this.cryptService.toHash(password);
-    const result = await super.create(userObj);
+    const result = await super.update(id, userObj);
     return result;
   }
 
   async deleteById(userId) {
-    const untieTasksResult = await this.tasksService.untieTasksFromUser(userId);
-
-    if (!untieTasksResult) return false;
+    await this.tasksService.untieTasksFromUser(userId);
 
     const result = await super.deleteById(userId);
     return result;
@@ -36,6 +35,9 @@ class UsersService extends PrototypeService {
 
   async getByLogin(login) {
     const user = await this.repo.getByLogin(login);
+    if (!user) {
+      throw new NotFoundError('no any user with such login');
+    }
     return user;
   }
 }

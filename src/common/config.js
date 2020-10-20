@@ -25,5 +25,6 @@ module.exports = {
       ? LOG_MODES.FILE
       : LOG_MODES.CONSOLE,
   LOG_MODES,
-  LOG_FILE_PATH
+  LOG_FILE_PATH,
+  RESPONSE_DELETED: { message: 'deleted successfully' }
 };

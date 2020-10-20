@@ -2,7 +2,7 @@
 counter=0;
 while true; do
     counter=$((counter+1))
-    npm test
+    npm run test:auth
     if [ $? -ne 0 ]; then
         break
     fi

@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { RESPONSE_DELETED } = require('../../common/config');
 const asyncHandler = require('../../middlewares/async-handler.middleware');
 const User = require('./user.model');
 const usersService = require('./user.service');
@@ -6,7 +7,6 @@ const usersService = require('./user.service');
 router.route('/').get(
   asyncHandler(async (req, res) => {
     const users = await usersService.getAll();
-    // map user fields to exclude secret fields like "password"
     res.json(users.map(User.toResponse));
   })
 );
@@ -14,10 +14,6 @@ router.route('/').get(
 router.route('/:id').get(
   asyncHandler(async (req, res) => {
     const user = await usersService.getById(req.params.id);
-    if (!user) {
-      res.status(404);
-      res.json({ message: 'not found' });
-    }
     res.json(User.toResponse(user));
   })
 );
@@ -31,25 +27,17 @@ router.route('/').post(
 
 router.route('/:id').put(
   asyncHandler(async (req, res) => {
-    const user = req.body;
+    const userObj = req.body;
     const id = req.params.id;
-    const newUser = await usersService.update(id, user);
-    if (!newUser) {
-      res.status(404);
-      res.json({ message: 'no such user in base' });
-      return;
-    }
+    const newUser = await usersService.update(id, userObj);
     res.json(User.toResponse(newUser));
   })
 );
 
 router.route('/:id').delete(
   asyncHandler(async (req, res) => {
-    const result = await usersService.deleteById(req.params.id);
-    if (!result) {
-      res.json({ message: 'nothing to delete' });
-    }
-    res.json({ message: 'deleted successfully' });
+    await usersService.deleteById(req.params.id);
+    res.json(RESPONSE_DELETED);
   })
 );
 

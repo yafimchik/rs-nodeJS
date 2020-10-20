@@ -30,7 +30,8 @@ class User extends Model {
       },
       login: {
         type: String,
-        required: true
+        required: true,
+        unique: true
       },
       password: {
         type: String,
