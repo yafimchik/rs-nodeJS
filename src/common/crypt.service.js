@@ -1,20 +1,23 @@
+const bcrypt = require('bcrypt');
+const { SALT_ROUNDS } = require('./config');
+
 class CryptService {
-  constructor() {
-    // TODO init crypt lib
+  constructor(cryptLib, saltRounds) {
+    this.crypto = cryptLib;
+    this.saltRounds = saltRounds;
   }
 
-  toHash(str = '') {
-    // TODO hash;
-    const hash = str;
+  async toHash(str = '') {
+    const hash = await this.crypto.hash(str, SALT_ROUNDS);
     return hash;
   }
 
-  compareStringWithHash(str, hash) {
-    // TODO compare
-    return str === hash;
+  async compareStringWithHash(str, hash) {
+    const result = await this.crypto.compare(str, hash);
+    return result;
   }
 }
 
-const cryptService = new CryptService();
+const cryptService = new CryptService(bcrypt, SALT_ROUNDS);
 
 module.exports = cryptService;
