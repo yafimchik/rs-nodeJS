@@ -4,6 +4,7 @@ const BOARD_MODEL_NAME = 'board';
 
 const { DataTypes, Model } = require('sequelize');
 const Column = require('./columns/column.model');
+const Task = require('../tasks/task.model');
 
 class Board extends Model {}
 
@@ -26,10 +27,18 @@ Board.init(boardSchema, {
   modelName: BOARD_MODEL_NAME // We need to choose the model name
 });
 
-Board.hasMany(Column, {
+Board.Columns = Board.hasMany(Column.model, {
   foreignKey: 'boardId',
   onDelete: 'cascade',
-  onUpdate: 'cascade'
+  onUpdate: 'cascade',
+  as: 'columns'
+});
+
+Board.Tasks = Board.hasMany(Task.model, {
+  foreignKey: 'boardId',
+  onDelete: 'cascade',
+  onUpdate: 'cascade',
+  as: 'tasks'
 });
 
 module.exports = {

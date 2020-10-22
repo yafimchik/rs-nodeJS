@@ -36,16 +36,6 @@ class TasksService extends PrototypeService {
     }
     return result;
   }
-
-  async deleteAllBoardTasks(boardId) {
-    const result = await this.repo.deleteAllByBoardId(boardId);
-    return result;
-  }
-
-  async untieTasksFromUser(userId) {
-    const result = await this.repo.untieFromUserId(userId);
-    return result;
-  }
 }
 
 const tasksService = new TasksService(TaskMysqlRepository, Task.model);

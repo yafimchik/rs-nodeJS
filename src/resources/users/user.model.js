@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const { sequelize } = require('../../utils/mysql.database');
+const Task = require('../tasks/task.model');
 
 const USER_MODEL_NAME = 'user';
 
@@ -22,7 +23,7 @@ const userSchema = {
     unique: true
   },
   password: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false
   }
 };
@@ -31,6 +32,13 @@ User.init(userSchema, {
   // Other model options go here
   sequelize, // We need to pass the connection instance
   modelName: USER_MODEL_NAME // We need to choose the model name
+});
+
+User.Tasks = User.hasMany(Task.model, {
+  foreignKey: 'userId',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+  as: 'tasks'
 });
 
 module.exports = {

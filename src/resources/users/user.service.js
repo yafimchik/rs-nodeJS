@@ -2,8 +2,8 @@ const User = require('./user.model');
 const PrototypeService = require('../../common/prototype.service');
 const tasksService = require('../tasks/task.service');
 const cryptService = require('../../utils/crypt.service');
-const UsersMongodbRepository = require('./user.mongodb.repository');
 const NotFoundError = require('../../errors/not-found.error');
+const MysqlRepository = require('../../common/prototype.mysql.repository');
 
 class UsersService extends PrototypeService {
   constructor(repo, model, tasksServ, cryptServ) {
@@ -26,13 +26,6 @@ class UsersService extends PrototypeService {
     return result;
   }
 
-  async deleteById(userId) {
-    await this.tasksService.untieTasksFromUser(userId);
-
-    const result = await super.deleteById(userId);
-    return result;
-  }
-
   async getByLogin(login) {
     const user = await this.repo.getByLogin(login);
     if (!user) {
@@ -43,7 +36,7 @@ class UsersService extends PrototypeService {
 }
 
 const usersService = new UsersService(
-  UsersMongodbRepository,
+  MysqlRepository,
   User.model,
   tasksService,
   cryptService

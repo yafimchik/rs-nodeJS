@@ -44,6 +44,13 @@ function toString(value, indent = '') {
   return str;
 }
 
+function userToResponse(user) {
+  const result = { ...user };
+  delete result.password;
+  return result;
+}
+
 module.exports = {
-  toString
+  toString,
+  userToResponse
 };

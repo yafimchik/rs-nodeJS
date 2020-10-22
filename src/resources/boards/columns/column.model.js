@@ -1,6 +1,5 @@
 const { DataTypes, Model } = require('sequelize');
 const { sequelize } = require('../../../utils/mysql.database');
-// const Board = require('../board.model');
 
 const COLUMN_MODEL_NAME = 'column';
 

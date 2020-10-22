@@ -11,37 +11,38 @@ class BoardMysqlRepository extends MysqlRepository {
 
   async getAll() {
     const list = await this.model.findAll({
-      include: {
-        model: this.columnModel,
-        as: 'columns',
-        through: { attributes: [''] }
-      }
+      include: [
+        this.model.Columns
+        // {
+        //   model: this.columnModel,
+        //   as:
+        //   through: { attributes: [Object.keys(Column.schema)] }
+        // }
+      ]
     });
-    return list;
+    return this.toObject(list);
   }
 
   async getById(id) {
     const entity = await this.model.findByPk(id, {
-      include: { model: this.columnModel, as: 'columns' }
+      include: [this.model.Columns]
     });
-    return entity;
+    console.log(this.toObject(entity));
+    return this.toObject(entity);
   }
 
   async post(obj) {
-    const entity = await this.model.create(obj);
-    return entity;
+    const entity = await this.model.create(obj, {
+      include: [this.model.Columns]
+    });
+    return this.toObject(entity);
   }
 
   async put(id, obj) {
-    const entity = await this.getById(id);
-    const result = await entity.update(obj);
-    return result;
-  }
-
-  async deleteById(id) {
-    // await this.columnRepo.deleteAllByBoardId(id);
-    const result = await super.deleteById(id);
-    return result;
+    const entity = await this.model.findByPk(id);
+    if (!entity) return false;
+    const result = await entity.update(obj, { include: [this.model.Columns] });
+    return this.toObject(result);
   }
 }
 
