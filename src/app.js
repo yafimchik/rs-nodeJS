@@ -37,7 +37,4 @@ boardRouter.use('/:boardId/tasks', taskRouter);
 
 app.use(errorHandler);
 
-// throw Error('Oops!');
-// Promise.reject(Error('Oops!'));
-
 module.exports = app;
