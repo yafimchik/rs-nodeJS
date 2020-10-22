@@ -4,7 +4,6 @@ const NotFoundError = require('../errors/not-found.error');
 class PrototypeService {
   constructor(repo, model) {
     this.repo = new repo(model);
-    this.model = model;
   }
 
   async getAll() {
@@ -24,8 +23,7 @@ class PrototypeService {
   }
 
   async create(obj) {
-    const modelEntity = new this.model(obj);
-    const result = await this.repo.post(modelEntity);
+    const result = await this.repo.post(obj);
     if (!result) {
       throw new BadRequestError('create entity error');
     }
@@ -33,8 +31,7 @@ class PrototypeService {
   }
 
   async update(id, obj) {
-    const newEntity = new this.model(obj);
-    const result = await this.repo.put(id, newEntity);
+    const result = await this.repo.put(id, obj);
     if (!result) {
       throw new BadRequestError('update entity error');
     }
