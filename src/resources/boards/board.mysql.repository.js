@@ -12,12 +12,13 @@ class BoardMysqlRepository extends MysqlRepository {
   async getAll() {
     const list = await this.model.findAll({
       include: [
-        this.model.Columns
-        // {
-        //   model: this.columnModel,
-        //   as:
-        //   through: { attributes: [Object.keys(Column.schema)] }
-        // }
+        {
+          association: this.model.Columns,
+          separate: true,
+          order: [
+            ['order', 'ASC'] // Sorts by COLUMN_NAME_EXAMPLE in ascending order
+          ]
+        }
       ]
     });
     return this.toObject(list);
@@ -25,7 +26,15 @@ class BoardMysqlRepository extends MysqlRepository {
 
   async getById(id) {
     const entity = await this.model.findByPk(id, {
-      include: [this.model.Columns]
+      include: [
+        {
+          association: this.model.Columns,
+          separate: true,
+          order: [
+            ['order', 'ASC'] // Sorts by COLUMN_NAME_EXAMPLE in ascending order
+          ]
+        }
+      ]
     });
     console.log(this.toObject(entity));
     return this.toObject(entity);
