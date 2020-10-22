@@ -1,8 +1,7 @@
-const MongodbRepository = require('../../common/prototype.mongodb.repository');
 const PrototypeService = require('../../common/prototype.service');
 const tasksService = require('../tasks/task.service');
 const Board = require('./board.model');
-
+const BoardMysqlRepository = require('./board.mysql.repository');
 class BoardsService extends PrototypeService {
   constructor(repo, model, tasksServ) {
     super(repo, model);
@@ -18,6 +17,10 @@ class BoardsService extends PrototypeService {
   }
 }
 
-const boardsService = new BoardsService(MongodbRepository, Board, tasksService);
+const boardsService = new BoardsService(
+  BoardMysqlRepository,
+  Board.model,
+  tasksService
+);
 
 module.exports = boardsService;

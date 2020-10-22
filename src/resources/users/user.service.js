@@ -1,7 +1,7 @@
 const User = require('./user.model');
 const PrototypeService = require('../../common/prototype.service');
 const tasksService = require('../tasks/task.service');
-const cryptService = require('../../common/crypt.service');
+const cryptService = require('../../utils/crypt.service');
 const UsersMongodbRepository = require('./user.mongodb.repository');
 const NotFoundError = require('../../errors/not-found.error');
 
@@ -44,7 +44,7 @@ class UsersService extends PrototypeService {
 
 const usersService = new UsersService(
   UsersMongodbRepository,
-  User,
+  User.model,
   tasksService,
   cryptService
 );

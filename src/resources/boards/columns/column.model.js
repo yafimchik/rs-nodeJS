@@ -1,39 +1,35 @@
 const { DataTypes, Model } = require('sequelize');
-const { sequelize } = require('../../utils/mysql.database');
+const { sequelize } = require('../../../utils/mysql.database');
+// const Board = require('../board.model');
 
-const USER_MODEL_NAME = 'user';
+const COLUMN_MODEL_NAME = 'column';
 
-class User extends Model {}
+class Column extends Model {}
 
-const userSchema = {
+const columnSchema = {
   id: {
     primaryKey: true,
     allowNull: false,
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4
   },
-  name: {
+  title: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  login: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
-  },
-  password: {
+  order: {
     type: DataTypes.INTEGER,
     allowNull: false
   }
 };
 
-User.init(userSchema, {
+Column.init(columnSchema, {
   // Other model options go here
   sequelize, // We need to pass the connection instance
-  modelName: USER_MODEL_NAME // We need to choose the model name
+  modelName: COLUMN_MODEL_NAME // We need to choose the model name
 });
 
 module.exports = {
-  model: User,
-  schema: userSchema
+  model: Column,
+  schema: columnSchema
 };

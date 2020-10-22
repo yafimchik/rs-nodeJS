@@ -1,58 +1,71 @@
-const Model = require('../../common/prototype.model');
+const { DataTypes, Model } = require('sequelize');
+const { sequelize } = require('../../utils/mysql.database');
+const Board = require('../boards/board.model');
+const Column = require('../boards/columns/column.model');
+const User = require('../users/user.model');
 
-class Task extends Model {
-  constructor(obj = {}) {
-    super(obj);
-    const {
-      title = 'title',
-      order = 'order',
-      description = 'description',
-      userId = null,
-      boardId = null,
-      columnId = null
-    } = obj;
-    this.title = title;
-    this.order = order;
-    this.description = description;
-    this.userId = userId;
-    this.boardId = boardId;
-    this.columnId = columnId;
+const TASK_MODEL_NAME = 'task';
+
+class Task extends Model {}
+
+const taskSchema = {
+  id: {
+    primaryKey: true,
+    allowNull: false,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  order: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  userId: {
+    allowNull: true,
+    type: DataTypes.UUID,
+    references: {
+      // This is a reference to another model
+      model: User,
+      // This is the column name of the referenced model
+      key: 'id'
+    }
+  },
+  columnId: {
+    allowNull: true,
+    type: DataTypes.UUID,
+    references: {
+      // This is a reference to another model
+      model: Column,
+      // This is the column name of the referenced model
+      key: 'id'
+    }
+  },
+  boardId: {
+    allowNull: false,
+    type: DataTypes.UUID,
+    references: {
+      // This is a reference to another model
+      model: Board,
+      // This is the column name of the referenced model
+      key: 'id'
+    }
   }
+};
 
-  static get modelName() {
-    return 'Task';
-  }
+Task.init(taskSchema, {
+  // Other model options go here
+  sequelize, // We need to pass the connection instance
+  modelName: TASK_MODEL_NAME // We need to choose the model name
+});
 
-  static toPropsArray() {
-    return ['title', 'order', 'description', 'userId', 'boardId', 'columnId'];
-  }
-
-  static toSchemaType() {
-    const type = {
-      title: {
-        type: String,
-        required: true
-      },
-      order: {
-        type: Number,
-        required: true
-      },
-      description: {
-        type: String
-      },
-      userId: {
-        type: String
-      },
-      boardId: {
-        type: String,
-        required: true
-      },
-      columnId: {
-        type: String
-      }
-    };
-    return type;
-  }
-}
-
-module.exports = Task;
+module.exports = {
+  model: Task,
+  schema: taskSchema
+};

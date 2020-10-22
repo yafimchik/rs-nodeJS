@@ -1,37 +1,38 @@
-const Model = require('../../common/prototype.model');
-const Column = require('./column.model');
+const { sequelize } = require('../../utils/mysql.database');
 
-class Board extends Model {
-  constructor(obj = {}) {
-    const { title = 'title', columns = [] } = obj;
-    super(obj);
+const BOARD_MODEL_NAME = 'board';
 
-    this.title = title;
-    this.columns = columns.map(col => new Column(col));
+const { DataTypes, Model } = require('sequelize');
+const Column = require('./columns/column.model');
+
+class Board extends Model {}
+
+const boardSchema = {
+  id: {
+    primaryKey: true,
+    allowNull: false,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
   }
+};
 
-  static get columnModel() {
-    return Column;
-  }
+Board.init(boardSchema, {
+  // Other model options go here
+  sequelize, // We need to pass the connection instance
+  modelName: BOARD_MODEL_NAME // We need to choose the model name
+});
 
-  static get modelName() {
-    return 'Board';
-  }
+Board.hasMany(Column, {
+  foreignKey: 'boardId',
+  onDelete: 'cascade',
+  onUpdate: 'cascade'
+});
 
-  static toSchemaType() {
-    const type = {
-      title: {
-        type: String,
-        required: true
-      },
-      columns: [Column.toSchemaType()]
-    };
-    return type;
-  }
-
-  static toPropsArray() {
-    return ['title', 'columns'];
-  }
-}
-
-module.exports = Board;
+module.exports = {
+  model: Board,
+  schema: boardSchema
+};

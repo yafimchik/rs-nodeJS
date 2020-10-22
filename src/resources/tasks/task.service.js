@@ -1,8 +1,8 @@
 const PrototypeService = require('../../common/prototype.service');
-const TasksMongodbRepository = require('./task.mongodb.repository');
 const Task = require('./task.model');
 const BadRequestError = require('../../errors/bad-request.error');
 const NotFoundError = require('../../errors/not-found.error');
+const TaskMysqlRepository = require('./task.mysql.repository');
 
 class TasksService extends PrototypeService {
   async getAllByBoardId(boardId) {
@@ -48,6 +48,6 @@ class TasksService extends PrototypeService {
   }
 }
 
-const tasksService = new TasksService(TasksMongodbRepository, Task);
+const tasksService = new TasksService(TaskMysqlRepository, Task.model);
 
 module.exports = tasksService;
