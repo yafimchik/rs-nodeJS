@@ -17,8 +17,12 @@ const sequelize = new Sequelize(
   }
 );
 
+const reset = false;
+
+const options = reset ? { force: true } : undefined;
+
 async function connectToMysql() {
-  await sequelize.sync({ force: true });
+  await sequelize.sync(options);
   logger.addStatus('DB connected');
 }
 
