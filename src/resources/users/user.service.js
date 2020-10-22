@@ -3,7 +3,7 @@ const PrototypeService = require('../../common/prototype.service');
 const tasksService = require('../tasks/task.service');
 const cryptService = require('../../utils/crypt.service');
 const NotFoundError = require('../../errors/not-found.error');
-const MysqlRepository = require('../../common/prototype.mysql.repository');
+const UsersMysqlRepository = require('./user.mysql.repository');
 
 class UsersService extends PrototypeService {
   constructor(repo, model, tasksServ, cryptServ) {
@@ -36,7 +36,7 @@ class UsersService extends PrototypeService {
 }
 
 const usersService = new UsersService(
-  MysqlRepository,
+  UsersMysqlRepository,
   User.model,
   tasksService,
   cryptService
