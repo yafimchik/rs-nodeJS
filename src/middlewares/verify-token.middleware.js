@@ -1,5 +1,5 @@
 const { AUTH_MODE } = require('../common/config');
-const jwtService = require('../common/jwt.service');
+const jwtService = require('../utils/jwt.service');
 
 async function verifyToken(req, res, next) {
   if (!AUTH_MODE) {

@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { LOG_MODES, LOG_MODE, LOG_FILE_PATH } = require('./config');
+const { LOG_MODES, LOG_MODE, LOG_FILE_PATH } = require('../common/config');
 
 const { toString } = require('./utils');
 

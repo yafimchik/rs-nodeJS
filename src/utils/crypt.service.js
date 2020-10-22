@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { SALT_ROUNDS } = require('./config');
+const { SALT_ROUNDS } = require('../common/config');
 
 class CryptService {
   constructor(cryptLib, saltRounds) {

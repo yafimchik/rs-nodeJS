@@ -1,4 +1,4 @@
-const logger = require('../common/logger');
+const logger = require('../utils/logger');
 
 async function outputLogger(req, res, next) {
   const oldJson = res.json;

@@ -1,5 +1,5 @@
-const cryptService = require('./crypt.service');
-const jwtService = require('./jwt.service');
+const cryptService = require('../utils/crypt.service');
+const jwtService = require('../utils/jwt.service');
 const usersService = require('../resources/users/user.service');
 
 class LoginService {

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET_KEY } = require('./config');
+const { JWT_SECRET_KEY } = require('../common/config');
 
 class JwtService {
   constructor(jwtLib, secret) {
