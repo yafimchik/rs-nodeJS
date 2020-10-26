@@ -1,6 +1,6 @@
+const MongodbRepository = require('../../common/prototype.mongodb.repository');
 const PrototypeService = require('../../common/prototype.service');
 const tasksService = require('../tasks/task.service');
-const boardsRepo = require('./board.memory.repository');
 const Board = require('./board.model');
 
 class BoardsService extends PrototypeService {
@@ -10,14 +10,14 @@ class BoardsService extends PrototypeService {
   }
 
   async deleteById(boardId) {
-    const results = await Promise.all([
-      this.tasksService.deleteAllBoardTasks(boardId),
-      super.deleteById(boardId)
-    ]);
-    return !results.includes(false);
+    await this.tasksService.deleteAllBoardTasks(boardId);
+
+    const result = await super.deleteById(boardId);
+
+    return result;
   }
 }
 
-const boardsService = new BoardsService(boardsRepo, Board, tasksService);
+const boardsService = new BoardsService(MongodbRepository, Board, tasksService);
 
 module.exports = boardsService;

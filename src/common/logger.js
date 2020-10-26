@@ -5,6 +5,8 @@ const { toString } = require('./utils');
 
 const LOG_RECORD_TYPES = {
   INPUT: 'INPUT',
+  OUTPUT: 'OUTPUT',
+  STATUS: 'STATUS',
   ERROR: 'ERROR',
   EXCEPTION: 'UNCAUGHT EXCEPTION',
   REJECTION: 'UNHANDLED REJECTION'
@@ -33,13 +35,24 @@ class Logger {
     if (this.fileReady) {
       this.error$ = fs.createWriteStream(this.logFilePath, {
         encoding: 'utf8',
-        flags: 'a+'
+        flags: 'a'
       });
       this.normal$ = this.error$;
     } else {
       this.error$ = process.stderr;
       this.normal$ = process.stdout;
     }
+  }
+
+  addOutput(data) {
+    const newLogData = {
+      body: data
+    };
+    this.addToLog(newLogData, LOG_RECORD_TYPES.OUTPUT);
+  }
+
+  addStatus(message) {
+    this.addToLog({ message }, LOG_RECORD_TYPES.STATUS);
   }
 
   addToLog(logData, eventType = LOG_RECORD_TYPES.INPUT) {
@@ -52,7 +65,8 @@ class Logger {
 
   addInput(req) {
     const newLogData = {
-      url: req.url,
+      method: req.method,
+      url: req.originalUrl,
       queryParams: req.query,
       body: req.body
     };
@@ -82,10 +96,7 @@ class Logger {
   }
 
   print(logData) {
-    const dataToPrint = logData;
-    const { type, time } = dataToPrint;
-    delete dataToPrint.type;
-    delete dataToPrint.time;
+    const { type, time, ...dataToPrint } = logData;
     const titleString = `${type} ${new Date(time).toISOString()}`;
     const logDataString = toString(dataToPrint);
 

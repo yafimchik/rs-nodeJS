@@ -1,4 +1,5 @@
 const router = require('express').Router({ mergeParams: true });
+const { RESPONSE_DELETED } = require('../../common/config');
 const asyncHandler = require('../../middlewares/async-handler.middleware');
 const tasksService = require('./task.service');
 
@@ -24,11 +25,6 @@ router.route('/:taskId').get(
       req.params.boardId,
       req.params.taskId
     );
-    if (!task) {
-      res.status(404);
-      res.json({ message: 'not found' });
-      return;
-    }
     res.json(task);
   })
 );
@@ -37,19 +33,16 @@ router.route('/:taskId').put(
   asyncHandler(async (req, res) => {
     const task = req.body;
     task.boardId = req.params.boardId;
-    task.taskId = req.params.taskId;
-    const result = await tasksService.update(task);
+    const id = req.params.taskId;
+    const result = await tasksService.update(id, task);
     res.json(result);
   })
 );
 
 router.route('/:taskId').delete(
   asyncHandler(async (req, res) => {
-    const result = await tasksService.deleteById(
-      req.params.boardId,
-      req.params.taskId
-    );
-    res.json(result);
+    await tasksService.deleteById(req.params.boardId, req.params.taskId);
+    res.json(RESPONSE_DELETED);
   })
 );
 
