@@ -2,6 +2,7 @@ const router = require('express').Router({ mergeParams: true });
 const { RESPONSE_DELETED } = require('../../common/config');
 const asyncHandler = require('../../middlewares/async-handler.middleware');
 const tasksService = require('./task.service');
+const taskValidator = require('./task.validator');
 
 router.route('/').get(
   asyncHandler(async (req, res) => {
@@ -11,6 +12,7 @@ router.route('/').get(
 );
 
 router.route('/').post(
+  asyncHandler(taskValidator),
   asyncHandler(async (req, res) => {
     const task = req.body;
     task.boardId = req.params.boardId;
@@ -30,6 +32,7 @@ router.route('/:taskId').get(
 );
 
 router.route('/:taskId').put(
+  asyncHandler(taskValidator),
   asyncHandler(async (req, res) => {
     const task = req.body;
     task.boardId = req.params.boardId;

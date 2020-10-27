@@ -1,3 +1,5 @@
+const BadRequestError = require('../errors/bad-request.error');
+
 function toString(value, indent = '') {
   if (value === undefined || value === null) return "''";
 
@@ -44,6 +46,17 @@ function toString(value, indent = '') {
   return str;
 }
 
+function generateValidator(schema) {
+  return async (req, res, next) => {
+    const { error } = schema.validate(res.body);
+    if (error) {
+      throw new BadRequestError();
+    }
+    next();
+  };
+}
+
 module.exports = {
-  toString
+  toString,
+  generateValidator
 };
