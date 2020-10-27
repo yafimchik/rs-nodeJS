@@ -2,6 +2,7 @@ const router = require('express').Router();
 const { RESPONSE_DELETED } = require('../../common/config');
 const asyncHandler = require('../../middlewares/async-handler.middleware');
 const boardsService = require('./board.service');
+const boardValidator = require('./board.validator');
 
 router.route('/').get(
   asyncHandler(async (req, res) => {
@@ -18,6 +19,7 @@ router.route('/:boardId').get(
 );
 
 router.route('/').post(
+  asyncHandler(boardValidator),
   asyncHandler(async (req, res) => {
     const board = { ...req.body };
     const result = await boardsService.create(board);
@@ -27,6 +29,7 @@ router.route('/').post(
 );
 
 router.route('/:boardId').put(
+  asyncHandler(boardValidator),
   asyncHandler(async (req, res) => {
     const board = { ...req.body };
     const id = req.params.boardId;

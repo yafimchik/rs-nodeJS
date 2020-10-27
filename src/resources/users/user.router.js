@@ -3,6 +3,7 @@ const { RESPONSE_DELETED } = require('../../common/config');
 const asyncHandler = require('../../middlewares/async-handler.middleware');
 const User = require('./user.model');
 const usersService = require('./user.service');
+const userValidator = require('./user.validator');
 
 router.route('/').get(
   asyncHandler(async (req, res) => {
@@ -19,6 +20,7 @@ router.route('/:id').get(
 );
 
 router.route('/').post(
+  asyncHandler(userValidator),
   asyncHandler(async (req, res) => {
     const user = await usersService.create(req.body);
     res.json(User.toResponse(user));
@@ -26,6 +28,7 @@ router.route('/').post(
 );
 
 router.route('/:id').put(
+  asyncHandler(userValidator),
   asyncHandler(async (req, res) => {
     const userObj = req.body;
     const id = req.params.id;
